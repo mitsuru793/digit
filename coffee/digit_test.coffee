@@ -17,7 +17,7 @@ describe 'mainTest', ->
       actual = Digit.isFloat(num)
       expect(actual).toBe(true, num)
 
-  it 'removeSymbolTest', ->
+  it 'removeSymbol', ->
     # [input, expected]
     patterns = [
       ['100', '100']
@@ -32,7 +32,7 @@ describe 'mainTest', ->
       actual = Digit.removeSymbol(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getDigitTest', ->
+  it 'getDigit', ->
     # [input, expected]
     patterns = [
       [100, 3]
@@ -47,7 +47,7 @@ describe 'mainTest', ->
       actual = Digit.getDigit(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getFromIntgerTest', ->
+  it 'getFromIntger', ->
     # [input, expected]
     patterns = [
       [100, 3]
