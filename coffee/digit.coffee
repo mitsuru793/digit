@@ -18,7 +18,7 @@ class exports.Digit
     digit = numberString.length
 
   # 整数部分の桁数を求める
-  @getFromIntger = (number) ->
+  @getFromInteger = (number) ->
     numberString = Math.floor(number).toString()
     numberString = @removeSymbol(numberString)
     numberString.length
