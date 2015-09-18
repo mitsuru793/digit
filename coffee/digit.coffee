@@ -12,7 +12,7 @@ class exports.Digit
     numberString.replace(/[-\+\.]/g, '')
 
   # 小数点、符号は含まない
-  @getDigit = (number) ->
+  @get = (number) ->
     numberString = number.toString(10)
     numberString = @removeSymbol(numberString)
     digit = numberString.length

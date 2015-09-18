@@ -32,7 +32,7 @@ describe 'mainTest', ->
       actual = Digit.removeSymbol(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getDigit', ->
+  it 'get', ->
     # [input, expected]
     patterns = [
       [100, 3]
@@ -44,7 +44,7 @@ describe 'mainTest', ->
       [-100.4, 4]
     ]
     for pattern in patterns
-      actual = Digit.getDigit(pattern[0])
+      actual = Digit.get(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
   it 'getFromIntger', ->
