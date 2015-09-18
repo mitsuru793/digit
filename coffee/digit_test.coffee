@@ -47,7 +47,7 @@ describe 'mainTest', ->
       actual = Digit.getDigit(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getDigitIntTest', ->
+  it 'getFromIntgerTest', ->
     # [input, expected]
     patterns = [
       [100, 3]
@@ -59,7 +59,7 @@ describe 'mainTest', ->
       [-100.4, 3]
     ]
     for pattern in patterns
-      actual = Digit.getDigitInt(pattern[0])
+      actual = Digit.getFromIntger(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
     # [input, expected]
@@ -73,10 +73,10 @@ describe 'mainTest', ->
       [-100.4, 3]
     ]
     for pattern  in patterns
-      actual = Digit.getDigitInt(pattern[0])
+      actual = Digit.getFromIntger(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getDigitFloat', ->
+  it 'getFromFloat', ->
     patterns = [
       [100.12, 2]
       [+34.1, 1]
@@ -85,13 +85,13 @@ describe 'mainTest', ->
       [-100.12345, 5]
     ]
     for pattern in patterns
-      actual = Digit.getDigitFloat(pattern[0])
+      actual = Digit.getFromFloat(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
     for num in [100, +34, 1, +0, 0, -0, -5, -85]
-      actual = Digit.getDigitFloat(num)
+      actual = Digit.getFromFloat(num)
       expect(actual).toBe(0, num)
 
-  it 'paddingDigit', ->
+  it 'align', ->
     padding = '0'
     maxIntDigit = 5
     maxFloatDigit = 4
@@ -105,5 +105,5 @@ describe 'mainTest', ->
       [-100.12345, '-00100.12345']
     ]
     for pattern in patterns
-      actual = Digit.paddingDigit(pattern[0], padding, maxIntDigit, maxFloatDigit)
+      actual = Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit)
       expect(actual).toBe(pattern[1], pattern)
