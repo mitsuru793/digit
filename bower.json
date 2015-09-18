@@ -1,0 +1,22 @@
+{
+  "name": "Digit",
+  "version": "0.0.0",
+  "main": "js/digit.js",
+  "keywords": [
+    "digit",
+    "number",
+    "align"
+  ],
+  "authors": [
+    "mitsuru <mitsuru793@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "**/*_test.*"
+  ]
+}
