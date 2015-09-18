@@ -47,7 +47,7 @@ describe 'mainTest', ->
       actual = Digit.get(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
-  it 'getFromIntger', ->
+  it 'getFromInteger', ->
     # [input, expected]
     patterns = [
       [100, 3]
@@ -59,7 +59,7 @@ describe 'mainTest', ->
       [-100.4, 3]
     ]
     for pattern in patterns
-      actual = Digit.getFromIntger(pattern[0])
+      actual = Digit.getFromInteger(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
     # [input, expected]
@@ -73,7 +73,7 @@ describe 'mainTest', ->
       [-100.4, 3]
     ]
     for pattern  in patterns
-      actual = Digit.getFromIntger(pattern[0])
+      actual = Digit.getFromInteger(pattern[0])
       expect(actual).toBe(pattern[1], pattern)
 
   it 'getFromFloat', ->

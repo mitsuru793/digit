@@ -37,7 +37,7 @@ class exports.Digit
   @align = (number, intPadding, maxIntDigit, maxFloatDigit=0, floatPadding=0) ->
     numberString = number.toString()
 
-    intDigit = @getFromIntger(number)
+    intDigit = @getFromInteger(number)
     diffIntDigit = maxIntDigit - intDigit
     # マイナス符号は一旦外してパディングを埋める
     if number < 0

@@ -27,7 +27,7 @@
       return digit = numberString.length;
     };
 
-    Digit.getFromIntger = function(number) {
+    Digit.getFromInteger = function(number) {
       var numberString;
       numberString = Math.floor(number).toString();
       numberString = this.removeSymbol(numberString);
@@ -53,7 +53,7 @@
         floatPadding = 0;
       }
       numberString = number.toString();
-      intDigit = this.getFromIntger(number);
+      intDigit = this.getFromInteger(number);
       diffIntDigit = maxIntDigit - intDigit;
       if (number < 0) {
         numberString = numberString.replace('-', '');
