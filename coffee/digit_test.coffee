@@ -99,6 +99,39 @@ describe 'mainTest', ->
         actual = Digit.getFromFloat(num)
         expect(actual).toBe(0, num)
 
+  describe '#alignIntegerPart', ->
+    it 'returns number string aligned in integer part by padding', ->
+      padding = '0'
+      maxIntDigit = 5
+      patterns = [
+        [100.12, '00100.12']
+        [+34.1, '00034.1']
+        [33, '00033']
+        [0, '00000']
+        [0.4577, '00000.4577']
+        [-0.8, '-00000.8']
+        [-100.1234, '-00100.1234']
+      ]
+      for pattern in patterns
+        actual = Digit.alignIntegerPart(pattern[0], padding, maxIntDigit)
+        expect(actual).toBe(pattern[1], pattern)
+        expect(actual).toEqual(jasmine.any(String), pattern)
+  describe '#alignDecimalPart', ->
+    describe '#context', ->
+    it 'returns number string aligned in decimal part by padding and rounding', ->
+      padding = '0'
+      maxDecimalDigit = 3
+      patterns = [
+        [100.12, '100.120']
+        [+34.1124, '34.112']
+        [33, '33.000']
+        [0, '0.000']
+        [-1.8499, '-1.850']
+      ]
+      for pattern in patterns
+        actual = Digit.alignDecimalPart(pattern[0], padding, maxDecimalDigit)
+        expect(actual).toBe(pattern[1], pattern)
+        expect(actual).toEqual(jasmine.any(String), pattern)
   describe '#align', ->
     it 'alings digit by padding for display', ->
       padding = '0'
@@ -111,8 +144,22 @@ describe 'mainTest', ->
         [0, '00000.0000']
         [0.4577, '00000.4577']
         [-0.8, '-00000.8000']
-        [-100.12345, '-00100.12345']
+        [-100.1234, '-00100.1234']
       ]
       for pattern in patterns
         actual = Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit)
         expect(actual).toBe(pattern[1], pattern)
+        expect(actual).toEqual(jasmine.any(String), pattern)
+    describe 'when option decimal digit is over', ->
+      it 'rounds over decimal', ->
+        padding = '0'
+        maxIntDigit = 3
+        maxFloatDigit = 2
+        patterns = [
+          [100.123, '100.12']
+          [+34.138, '00034.14']
+          [33, '033.00']
+        ]
+        for pattern in patterns
+          actual = Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit)
+          expect(actual).toBe(pattern[1], pattern)
