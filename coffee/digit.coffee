@@ -18,13 +18,13 @@ class exports.Digit
     digit = numberString.length
 
   # 整数部分の桁数を求める
-  @getFromInteger = (number) ->
+  @getIntegerPart = (number) ->
     numberString = Math.floor(number).toString()
     numberString = @removeSymbol(numberString)
     numberString.length
 
   # 小数点以降の桁数を求める
-  @getFromFloat = (number) ->
+  @getDecimalPart = (number) ->
     if @isInteger(number)
       return 0
     numberString = number.toString()
@@ -34,10 +34,10 @@ class exports.Digit
 # TODO paddingのテスト
 # TODO numberが0に対応
   # 文字列を返す
-  @align = (number, intPadding, maxIntDigit, maxFloatDigit=0, floatPadding=0) ->
+  @align = (number, intPadding, maxIntDigit, maxDecimalDigit=0, decimalPadding=0) ->
     numberString = number.toString()
 
-    intDigit = @getFromInteger(number)
+    intDigit = @getIntegerPart(number)
     diffIntDigit = maxIntDigit - intDigit
     # マイナス符号は一旦外してパディングを埋める
     if number < 0
@@ -46,12 +46,19 @@ class exports.Digit
       numberString = intPadding + numberString
     if number < 0
       numberString = '-' + numberString
-    return numberString if @isInteger(number) && maxFloatDigit is 0
-    numberString += '.' if @getFromFloat(number) is 0
+    return numberString if @isInteger(number) && maxDecimalDigit is 0
+    numberString += '.' if @getDecimalPart(number) is 0
 
-    floatDigit = @getFromFloat(number)
-    diffFloatDigit = maxFloatDigit - floatDigit
-    return numberString if diffFloatDigit < 1
-    for i in [0...diffFloatDigit]
-      numberString += floatPadding
-    numberString
+    floatDigit = @getDecimalPart(number)
+    diffFloatDigit = maxDecimalDigit - floatDigit
+    if diffFloatDigit <= -1
+      base = 10 ^ Math.abs(diffFloatDigit)
+      numberString *= base
+      Math.round(numberString)
+      numberString /= base
+    else if diffFloatDigit >= 1
+      for i in [0...diffFloatDigit]
+        numberString += decimalPadding
+      numberString
+    else
+      numberString

@@ -53,7 +53,7 @@ describe 'mainTest', ->
         actual = Digit.get(pattern[0])
         expect(actual).toBe(pattern[1], pattern)
 
-  describe '#getFromInteger', ->
+  describe '#getIntegerPart', ->
     it 'get a digit of integer part of number', ->
       # [input, expected]
       patterns = [
@@ -66,7 +66,7 @@ describe 'mainTest', ->
         [-100.4, 3]
       ]
       for pattern in patterns
-        actual = Digit.getFromInteger(pattern[0])
+        actual = Digit.getIntegerPart(pattern[0])
         expect(actual).toBe(pattern[1], pattern)
 
       # [input, expected]
@@ -80,10 +80,10 @@ describe 'mainTest', ->
         [-100.4, 3]
       ]
       for pattern  in patterns
-        actual = Digit.getFromInteger(pattern[0])
+        actual = Digit.getIntegerPart(pattern[0])
         expect(actual).toBe(pattern[1], pattern)
 
-  describe '#getFromFloat', ->
+  describe '#getDecimalPart', ->
     it 'get a digit of decimal part of number', ->
       patterns = [
         [100.12, 2]
@@ -93,10 +93,10 @@ describe 'mainTest', ->
         [-100.12345, 5]
       ]
       for pattern in patterns
-        actual = Digit.getFromFloat(pattern[0])
+        actual = Digit.getDecimalPart(pattern[0])
         expect(actual).toBe(pattern[1], pattern)
       for num in [100, +34, 1, +0, 0, -0, -5, -85]
-        actual = Digit.getFromFloat(num)
+        actual = Digit.getDecimalPart(num)
         expect(actual).toBe(0, num)
 
   describe '#alignIntegerPart', ->

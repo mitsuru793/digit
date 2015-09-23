@@ -27,14 +27,14 @@
       return digit = numberString.length;
     };
 
-    Digit.getFromInteger = function(number) {
+    Digit.getIntegerPart = function(number) {
       var numberString;
       numberString = Math.floor(number).toString();
       numberString = this.removeSymbol(numberString);
       return numberString.length;
     };
 
-    Digit.getFromFloat = function(number) {
+    Digit.getDecimalPart = function(number) {
       var numberString;
       if (this.isInteger(number)) {
         return 0;
@@ -44,16 +44,16 @@
       return numberString.length;
     };
 
-    Digit.align = function(number, intPadding, maxIntDigit, maxFloatDigit, floatPadding) {
-      var diffFloatDigit, diffIntDigit, floatDigit, i, intDigit, j, k, numberString, ref, ref1;
-      if (maxFloatDigit == null) {
-        maxFloatDigit = 0;
+    Digit.align = function(number, intPadding, maxIntDigit, maxDecimalDigit, decimalPadding) {
+      var base, diffFloatDigit, diffIntDigit, floatDigit, i, intDigit, j, k, numberString, ref, ref1;
+      if (maxDecimalDigit == null) {
+        maxDecimalDigit = 0;
       }
-      if (floatPadding == null) {
-        floatPadding = 0;
+      if (decimalPadding == null) {
+        decimalPadding = 0;
       }
       numberString = number.toString();
-      intDigit = this.getFromInteger(number);
+      intDigit = this.getIntegerPart(number);
       diffIntDigit = maxIntDigit - intDigit;
       if (number < 0) {
         numberString = numberString.replace('-', '');
@@ -64,21 +64,27 @@
       if (number < 0) {
         numberString = '-' + numberString;
       }
-      if (this.isInteger(number) && maxFloatDigit === 0) {
+      if (this.isInteger(number) && maxDecimalDigit === 0) {
         return numberString;
       }
-      if (this.getFromFloat(number) === 0) {
+      if (this.getDecimalPart(number) === 0) {
         numberString += '.';
       }
-      floatDigit = this.getFromFloat(number);
-      diffFloatDigit = maxFloatDigit - floatDigit;
-      if (diffFloatDigit < 1) {
+      floatDigit = this.getDecimalPart(number);
+      diffFloatDigit = maxDecimalDigit - floatDigit;
+      if (diffFloatDigit <= -1) {
+        base = 10 ^ Math.abs(diffFloatDigit);
+        numberString *= base;
+        Math.round(numberString);
+        return numberString /= base;
+      } else if (diffFloatDigit >= 1) {
+        for (i = k = 0, ref1 = diffFloatDigit; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
+          numberString += decimalPadding;
+        }
+        return numberString;
+      } else {
         return numberString;
       }
-      for (i = k = 0, ref1 = diffFloatDigit; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
-        numberString += floatPadding;
-      }
-      return numberString;
     };
 
     return Digit;
