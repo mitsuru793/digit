@@ -44,6 +44,26 @@
       return numberString.length;
     };
 
+    Digit.alignIntegerPart = function(number, padding, maxDigit) {
+      var diffIntDigit, i, intDigit, j, numberString, ref;
+      intDigit = this.getIntegerPart(number);
+      diffIntDigit = maxDigit - intDigit;
+      if (diffIntDigit < 0) {
+        throw new Error("Number is over maxDigit");
+      }
+      numberString = number.toString();
+      if (number < 0) {
+        numberString = numberString.replace('-', '');
+      }
+      for (i = j = 0, ref = diffIntDigit; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        numberString = padding + numberString;
+      }
+      if (number < 0) {
+        numberString = '-' + numberString;
+      }
+      return numberString;
+    };
+
     Digit.align = function(number, intPadding, maxIntDigit, maxDecimalDigit, decimalPadding) {
       var base, diffFloatDigit, diffIntDigit, floatDigit, i, intDigit, j, k, numberString, ref, ref1;
       if (maxDecimalDigit == null) {

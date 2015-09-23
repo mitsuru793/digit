@@ -31,6 +31,21 @@ class exports.Digit
     numberString = numberString.match(/(?=.)\d+$/)[0]
     numberString.length
 
+  @alignIntegerPart = (number, padding, maxDigit) ->
+    intDigit = @getIntegerPart(number)
+    diffIntDigit = maxDigit - intDigit
+    if diffIntDigit < 0
+      throw new Error("Number is over maxDigit")
+    numberString = number.toString()
+    # マイナス符号は一旦外してパディングを埋める
+    if number < 0
+      numberString = numberString.replace('-', '')
+    for i in [0...diffIntDigit]
+      numberString = padding + numberString
+    if number < 0
+      numberString = '-' + numberString
+    numberString
+
 # TODO paddingのテスト
 # TODO numberが0に対応
   # 文字列を返す
