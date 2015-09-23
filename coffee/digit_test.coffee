@@ -90,6 +90,7 @@ describe 'mainTest', ->
         [+34.1, 1]
         [0.457, 3]
         [-0.8, 1]
+        [-1.85, 2]
         [-100.12345, 5]
       ]
       for pattern in patterns
@@ -98,6 +99,42 @@ describe 'mainTest', ->
       for num in [100, +34, 1, +0, 0, -0, -5, -85]
         actual = Digit.getDecimalPart(num)
         expect(actual).toBe(0, num)
+
+  describe '#padHead', ->
+    it 'returns number string padding head with minus symbol in mind', ->
+      padding = '0'
+      addDigit = 2
+      patterns = [
+        [100.12, '00100.12']
+        [+34.1, '0034.1']
+        [33, '0033']
+        [0, '000']
+        [0.4577, '000.4577']
+        [-0.8, '-000.8']
+        [-100.1234, '-00100.1234']
+      ]
+      for pattern in patterns
+        actual = Digit.padHead(pattern[0], addDigit, padding)
+        expect(actual).toBe(pattern[1], pattern)
+        expect(actual).toEqual(jasmine.any(String), pattern)
+
+  describe '#padTail', ->
+    it 'returns number string padding tail with deciaml in mind', ->
+      padding = '0'
+      addDigit = 2
+      patterns = [
+        [100.12, '100.1200']
+        [+34.1, '34.100']
+        [33, '33.00']
+        [0, '0.00']
+        [0.4577, '0.457700']
+        [-0.8, '-0.800']
+        [-100.1234, '-100.123400']
+      ]
+      for pattern in patterns
+        actual = Digit.padTail(pattern[0], addDigit, padding)
+        expect(actual).toBe(pattern[1], pattern)
+        expect(actual).toEqual(jasmine.any(String), pattern)
 
   describe '#alignIntegerPart', ->
     it 'returns number string aligned in integer part by padding', ->
@@ -113,10 +150,10 @@ describe 'mainTest', ->
         [-100.1234, '-00100.1234']
       ]
       for pattern in patterns
-        actual = Digit.alignIntegerPart(pattern[0], padding, maxIntDigit)
+        actual = Digit.alignIntegerPart(pattern[0], maxIntDigit, padding)
         expect(actual).toBe(pattern[1], pattern)
         expect(actual).toEqual(jasmine.any(String), pattern)
-    describe 'when number is over maxDigit', ->
+    describe 'when number is over maxIntegerDigit', ->
       it 'returns error object', ->
         padding = '0'
         maxIntDigit = 2
@@ -126,8 +163,8 @@ describe 'mainTest', ->
           -12040.8
         ]
         for pattern in patterns
-          expect(-> Digit.alignIntegerPart(pattern, padding, maxIntDigit))
-            .toThrow(new Error('Number is over maxDigit'))
+          expect(-> Digit.alignIntegerPart(pattern, maxIntDigit, padding))
+            .toThrow(new Error('Number is over maxIntegerDigit'))
 
   describe '#alignDecimalPart', ->
     describe '#context', ->
@@ -139,10 +176,12 @@ describe 'mainTest', ->
         [+34.1124, '34.112']
         [33, '33.000']
         [0, '0.000']
-        [-1.8499, '-1.850']
+        [-1.787, '-1.787']
+        [-1.7999, '-1.800']
+        [-1.9999, '-2.000']
       ]
       for pattern in patterns
-        actual = Digit.alignDecimalPart(pattern[0], padding, maxDecimalDigit)
+        actual = Digit.alignDecimalPart(pattern[0], maxDecimalDigit, padding)
         expect(actual).toBe(pattern[1], pattern)
         expect(actual).toEqual(jasmine.any(String), pattern)
 
@@ -161,7 +200,7 @@ describe 'mainTest', ->
         [-100.1234, '-00100.1234']
       ]
       for pattern in patterns
-        actual = Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit)
+        actual = Digit.align(pattern[0], maxIntDigit, padding, maxFloatDigit)
         expect(actual).toBe(pattern[1], pattern)
         expect(actual).toEqual(jasmine.any(String), pattern)
     describe 'when option decimal digit is over', ->
@@ -175,5 +214,5 @@ describe 'mainTest', ->
           [33, '033.00']
         ]
         for pattern in patterns
-          actual = Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit)
-          expect(actual).toBe(pattern[1], pattern)
+          expect(-> Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit))
+            .toThrow(new Error('Number is over maxIntegerDigit'))

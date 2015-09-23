@@ -31,49 +31,59 @@ class exports.Digit
     numberString = numberString.match(/(?=.)\d+$/)[0]
     numberString.length
 
-  @alignIntegerPart = (number, padding, maxDigit) ->
-    intDigit = @getIntegerPart(number)
-    diffIntDigit = maxDigit - intDigit
-    if diffIntDigit < 0
-      throw new Error("Number is over maxDigit")
+  @padHead = (number, addDigit, padding) ->
     numberString = number.toString()
     # マイナス符号は一旦外してパディングを埋める
     if number < 0
       numberString = numberString.replace('-', '')
-    for i in [0...diffIntDigit]
+    for i in [0...addDigit]
       numberString = padding + numberString
     if number < 0
       numberString = '-' + numberString
     numberString
 
+  @padTail = (number, addDigit, padding) ->
+    numberString = number.toString()
+    if not numberString.match(/\./)
+      numberString += '.'
+    for i in [0...addDigit]
+      numberString += padding
+    numberString
+
+  @alignIntegerPart = (number, maxIntegerDigit, padding) ->
+    diffIntDigit = maxIntegerDigit - @getIntegerPart(number)
+    if diffIntDigit < 0
+      throw new Error("Number is over maxIntegerDigit")
+    # マイナス符号は一旦外してパディングを埋める
+    @padHead(number, diffIntDigit, padding)
+
+  @alignDecimalPart = (number, maxDecimalDigit, padding) ->
+    diffDecimalDigit = maxDecimalDigit - @getDecimalPart(number)
+    if diffDecimalDigit <= -1
+      base = Math.pow(10, maxDecimalDigit)
+      number *= base
+      number = Math.round(number)
+      number /= base
+      diffDecimalDigit = maxDecimalDigit - @getDecimalPart(number)
+      # 四捨五入で0になった桁は失われているため補充
+      if diffDecimalDigit > 0
+        numberString = @padTail(number, diffDecimalDigit, padding)
+      else
+        numberString = number.toString()
+      numberString
+    else if diffDecimalDigit >= 1
+      numberString = @padTail(number, diffDecimalDigit, padding)
+    else
+      numberString = number.toString()
+    numberString
+
 # TODO paddingのテスト
 # TODO numberが0に対応
   # 文字列を返す
-  @align = (number, intPadding, maxIntDigit, maxDecimalDigit=0, decimalPadding=0) ->
-    numberString = number.toString()
-
-    intDigit = @getIntegerPart(number)
-    diffIntDigit = maxIntDigit - intDigit
-    # マイナス符号は一旦外してパディングを埋める
-    if number < 0
-      numberString = numberString.replace('-', '')
-    for i in [0...diffIntDigit]
-      numberString = intPadding + numberString
-    if number < 0
-      numberString = '-' + numberString
-    return numberString if @isInteger(number) && maxDecimalDigit is 0
-    numberString += '.' if @getDecimalPart(number) is 0
-
-    floatDigit = @getDecimalPart(number)
-    diffFloatDigit = maxDecimalDigit - floatDigit
-    if diffFloatDigit <= -1
-      base = 10 ^ Math.abs(diffFloatDigit)
-      numberString *= base
-      Math.round(numberString)
-      numberString /= base
-    else if diffFloatDigit >= 1
-      for i in [0...diffFloatDigit]
-        numberString += decimalPadding
-      numberString
-    else
-      numberString
+  @align = (number, maxIntDigit, intPadding, maxDecimalDigit=0, decimalPadding=0) ->
+    integerString = @alignIntegerPart(number, maxIntDigit, intPadding)
+    if integerString.match(/\./)
+      integerString = integerString.replace(/\..*/, '')
+    decimalString = @alignDecimalPart(number, maxDecimalDigit, decimalPadding)
+    decimalString = decimalString.replace(/^.*?\./,'.')
+    integerString + decimalString

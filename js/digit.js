@@ -44,18 +44,13 @@
       return numberString.length;
     };
 
-    Digit.alignIntegerPart = function(number, padding, maxDigit) {
-      var diffIntDigit, i, intDigit, j, numberString, ref;
-      intDigit = this.getIntegerPart(number);
-      diffIntDigit = maxDigit - intDigit;
-      if (diffIntDigit < 0) {
-        throw new Error("Number is over maxDigit");
-      }
+    Digit.padHead = function(number, addDigit, padding) {
+      var i, j, numberString, ref;
       numberString = number.toString();
       if (number < 0) {
         numberString = numberString.replace('-', '');
       }
-      for (i = j = 0, ref = diffIntDigit; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      for (i = j = 0, ref = addDigit; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
         numberString = padding + numberString;
       }
       if (number < 0) {
@@ -64,47 +59,65 @@
       return numberString;
     };
 
-    Digit.align = function(number, intPadding, maxIntDigit, maxDecimalDigit, decimalPadding) {
-      var base, diffFloatDigit, diffIntDigit, floatDigit, i, intDigit, j, k, numberString, ref, ref1;
+    Digit.padTail = function(number, addDigit, padding) {
+      var i, j, numberString, ref;
+      numberString = number.toString();
+      if (!numberString.match(/\./)) {
+        numberString += '.';
+      }
+      for (i = j = 0, ref = addDigit; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        numberString += padding;
+      }
+      return numberString;
+    };
+
+    Digit.alignIntegerPart = function(number, maxIntegerDigit, padding) {
+      var diffIntDigit;
+      diffIntDigit = maxIntegerDigit - this.getIntegerPart(number);
+      if (diffIntDigit < 0) {
+        throw new Error("Number is over maxIntegerDigit");
+      }
+      return this.padHead(number, diffIntDigit, padding);
+    };
+
+    Digit.alignDecimalPart = function(number, maxDecimalDigit, padding) {
+      var base, diffDecimalDigit, numberString;
+      diffDecimalDigit = maxDecimalDigit - this.getDecimalPart(number);
+      if (diffDecimalDigit <= -1) {
+        base = Math.pow(10, maxDecimalDigit);
+        number *= base;
+        number = Math.round(number);
+        number /= base;
+        diffDecimalDigit = maxDecimalDigit - this.getDecimalPart(number);
+        if (diffDecimalDigit > 0) {
+          numberString = this.padTail(number, diffDecimalDigit, padding);
+        } else {
+          numberString = number.toString();
+        }
+        numberString;
+      } else if (diffDecimalDigit >= 1) {
+        numberString = this.padTail(number, diffDecimalDigit, padding);
+      } else {
+        numberString = number.toString();
+      }
+      return numberString;
+    };
+
+    Digit.align = function(number, maxIntDigit, intPadding, maxDecimalDigit, decimalPadding) {
+      var decimalString, integerString;
       if (maxDecimalDigit == null) {
         maxDecimalDigit = 0;
       }
       if (decimalPadding == null) {
         decimalPadding = 0;
       }
-      numberString = number.toString();
-      intDigit = this.getIntegerPart(number);
-      diffIntDigit = maxIntDigit - intDigit;
-      if (number < 0) {
-        numberString = numberString.replace('-', '');
+      integerString = this.alignIntegerPart(number, maxIntDigit, intPadding);
+      if (integerString.match(/\./)) {
+        integerString = integerString.replace(/\..*/, '');
       }
-      for (i = j = 0, ref = diffIntDigit; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-        numberString = intPadding + numberString;
-      }
-      if (number < 0) {
-        numberString = '-' + numberString;
-      }
-      if (this.isInteger(number) && maxDecimalDigit === 0) {
-        return numberString;
-      }
-      if (this.getDecimalPart(number) === 0) {
-        numberString += '.';
-      }
-      floatDigit = this.getDecimalPart(number);
-      diffFloatDigit = maxDecimalDigit - floatDigit;
-      if (diffFloatDigit <= -1) {
-        base = 10 ^ Math.abs(diffFloatDigit);
-        numberString *= base;
-        Math.round(numberString);
-        return numberString /= base;
-      } else if (diffFloatDigit >= 1) {
-        for (i = k = 0, ref1 = diffFloatDigit; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
-          numberString += decimalPadding;
-        }
-        return numberString;
-      } else {
-        return numberString;
-      }
+      decimalString = this.alignDecimalPart(number, maxDecimalDigit, decimalPadding);
+      decimalString = decimalString.replace(/^.*?\./, '.');
+      return integerString + decimalString;
     };
 
     return Digit;
