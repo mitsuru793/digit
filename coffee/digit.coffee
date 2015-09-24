@@ -81,9 +81,15 @@ class exports.Digit
 # TODO numberが0に対応
   # 文字列を返す
   @align = (number, maxIntDigit, intPadding, maxDecimalDigit=0, decimalPadding=0) ->
-    integerString = @alignIntegerPart(number, maxIntDigit, intPadding)
-    if integerString.match(/\./)
-      integerString = integerString.replace(/\..*/, '')
     decimalString = @alignDecimalPart(number, maxDecimalDigit, decimalPadding)
+    if @isInteger(decimalString)
+      integerString =  @alignIntegerPart(Number(decimalString), maxIntDigit, intPadding)
+    else
+      integerString = @alignIntegerPart(number, maxIntDigit, intPadding)
+      if integerString.match(/\./)
+        integerString = integerString.replace(/\..*/, '')
     decimalString = decimalString.replace(/^.*?\./,'.')
-    integerString + decimalString
+    if maxDecimalDigit is 0 and @isInteger(decimalString)
+      integerString
+    else
+      integerString + decimalString

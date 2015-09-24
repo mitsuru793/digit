@@ -192,7 +192,7 @@ describe 'mainTest', ->
     it 'alings digit by padding for display', ->
       padding = '0'
       maxIntDigit = 5
-      maxFloatDigit = 4
+      maxDecimalDigit = 4
       patterns = [
         [100.12, '00100.1200']
         [+34.1, '00034.1000']
@@ -203,19 +203,37 @@ describe 'mainTest', ->
         [-100.1234, '-00100.1234']
       ]
       for pattern in patterns
-        actual = Digit.align(pattern[0], maxIntDigit, padding, maxFloatDigit)
+        actual = Digit.align(pattern[0], maxIntDigit, padding, maxDecimalDigit)
         expect(actual).toBe(pattern[1], pattern)
         expect(actual).toEqual(jasmine.any(String), pattern)
+    describe 'when maxDecimalDigit is 0', ->
+      it 'alings digit by padding for display', ->
+        padding = '0'
+        maxIntDigit = 5
+        maxDecimalDigit = 0
+        patterns = [
+          [100.12, '00100']
+          [+34.9, '00035']
+          [33, '00033']
+          [0, '00000']
+          [0.4577, '00000']
+          [-0.8, '-00001']
+          [-100.6234, '-00101']
+        ]
+        for pattern in patterns
+          actual = Digit.align(pattern[0], maxIntDigit, padding, maxDecimalDigit)
+          expect(actual).toBe(pattern[1], pattern)
+          expect(actual).toEqual(jasmine.any(String), pattern)
     describe 'when option decimal digit is over', ->
       it 'rounds over decimal', ->
         padding = '0'
         maxIntDigit = 3
-        maxFloatDigit = 2
+        maxDecimalDigit = 2
         patterns = [
           [100.123, '100.12']
           [+34.138, '00034.14']
           [33, '033.00']
         ]
         for pattern in patterns
-          expect(-> Digit.align(pattern[0], padding, maxIntDigit, maxFloatDigit))
+          expect(-> Digit.align(pattern[0], padding, maxIntDigit, maxDecimalDigit))
             .toThrow(new Error('Number is over maxIntegerDigit'))

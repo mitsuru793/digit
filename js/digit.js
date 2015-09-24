@@ -111,13 +111,21 @@
       if (decimalPadding == null) {
         decimalPadding = 0;
       }
-      integerString = this.alignIntegerPart(number, maxIntDigit, intPadding);
-      if (integerString.match(/\./)) {
-        integerString = integerString.replace(/\..*/, '');
-      }
       decimalString = this.alignDecimalPart(number, maxDecimalDigit, decimalPadding);
+      if (this.isInteger(decimalString)) {
+        integerString = this.alignIntegerPart(Number(decimalString), maxIntDigit, intPadding);
+      } else {
+        integerString = this.alignIntegerPart(number, maxIntDigit, intPadding);
+        if (integerString.match(/\./)) {
+          integerString = integerString.replace(/\..*/, '');
+        }
+      }
       decimalString = decimalString.replace(/^.*?\./, '.');
-      return integerString + decimalString;
+      if (maxDecimalDigit === 0 && this.isInteger(decimalString)) {
+        return integerString;
+      } else {
+        return integerString + decimalString;
+      }
     };
 
     return Digit;
