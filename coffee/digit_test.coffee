@@ -84,21 +84,24 @@ describe 'mainTest', ->
         expect(actual).toBe(pattern[1], pattern)
 
   describe '#getDecimalPart', ->
-    it 'get a digit of decimal part of number', ->
-      patterns = [
-        [100.12, 2]
-        [+34.1, 1]
-        [0.457, 3]
-        [-0.8, 1]
-        [-1.85, 2]
-        [-100.12345, 5]
-      ]
-      for pattern in patterns
-        actual = Digit.getDecimalPart(pattern[0])
-        expect(actual).toBe(pattern[1], pattern)
-      for num in [100, +34, 1, +0, 0, -0, -5, -85]
-        actual = Digit.getDecimalPart(num)
-        expect(actual).toBe(0, num)
+    describe 'when number is decimal', ->
+      it 'get a digit of decimal part of number', ->
+        patterns = [
+          [100.12, 2]
+          [+34.1, 1]
+          [0.457, 3]
+          [-0.8, 1]
+          [-1.85, 2]
+          [-100.12345, 5]
+        ]
+        for pattern in patterns
+          actual = Digit.getDecimalPart(pattern[0])
+          expect(actual).toBe(pattern[1], pattern)
+    describe 'when number is integer', ->
+      it 'returns 0', ->
+        for num in [100, +34, 5, 1, +0, 0, -0, -5, -85]
+          actual = Digit.getDecimalPart(num)
+          expect(actual).toBe(0, num)
 
   describe '#padHead', ->
     it 'returns number string padding head with minus symbol in mind', ->
