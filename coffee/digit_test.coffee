@@ -10,15 +10,15 @@ describe 'mainTest', ->
         actual = Digit.isInteger(num)
         expect(actual).toBe(false, num)
 
-  describe '#isFloat', ->
+  describe '#isDecimal', ->
     it 'reutns true when number is not float', ->
       for num in [+100, 15.0, 1, 0, 0.0, -0.0, -0, -1, -5.0, -132]
-        actual = Digit.isFloat(num)
+        actual = Digit.isDecimal(num)
         expect(actual).toBe(false, num)
 
     it 'reutns false when number is float', ->
       for num in [+15.3, 1.7, 0.01, -0.1, -2.3]
-        actual = Digit.isFloat(num)
+        actual = Digit.isDecimal(num)
         expect(actual).toBe(true, num)
 
   describe '#removeSymbol', ->

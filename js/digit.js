@@ -12,7 +12,7 @@
       return Math.floor(number) === number;
     };
 
-    Digit.isFloat = function(number) {
+    Digit.isDecimal = function(number) {
       return !this.isInteger(number);
     };
 

@@ -5,7 +5,7 @@ class exports.Digit
     # numberを小数点以下切り捨てても、変わりがない場合は整数である。
     Math.floor(number) is number
 
-  @isFloat = (number) ->
+  @isDecimal = (number) ->
     not @isInteger(number)
 
   @removeSymbol = (numberString) ->
